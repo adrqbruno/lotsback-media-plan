@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>LotsBack Media Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: dark-first trading-terminal document. Left-aligned editorial column, data blocks break wider. One accent (rebate mint) for money moving back to the trader; violet marks ecosystem data. */
+/* Layout: LotsBack brand — black ground, lime action color, heavy tight display type, rounded dark panels like the site's broker picker. Single dark look by design. */
+:root{
+  --bg:#000000; --surface:#0E0E0E; --raise:#161616; --line:#262626; --line-2:#333333;
+  --fg:#F2F1EC; --muted:#A3A39C; --dim:#6E6E68;
+  --accent:#DCFA6A; --accent-ink:#0A0A0A; --accent-soft:rgba(220,250,106,.08);
+  --eco:#DCFA6A; --eco-soft:rgba(220,250,106,.06);
+  --warn:#F2C25A; --crit:#F27A6A;
+  --c-prog:#DCFA6A; --c-pmax:#8FD6A8; --c-meta:#7FB8F0; --c-bp:#F2C25A; --c-tg:#C9A2F2; --c-res:#5A5A55;
+  --f-display:"Inter Tight","Inter",system-ui,sans-serif;
+  --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Inter",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 80px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(40px,7vw,84px);line-height:.95;font-weight:900;letter-spacing:-.045em}
+h2{font-size:clamp(26px,3.6vw,38px);line-height:1.05;font-weight:800;letter-spacing:-.03em}
+h3{font-size:17px;font-weight:600;line-height:1.3;font-family:var(--f-body);letter-spacing:-.005em}
+p{margin:0;max-width:68ch}
+.mono,.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--f-body);font-weight:600;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+a{color:var(--accent)}
+section{display:grid;gap:22px;padding-block:44px;border-top:1px solid var(--line)}
+.sec-head{display:grid;gap:10px}
+.sec-head .eyebrow{color:var(--accent)}
+
+/* masthead */
+.mast{display:grid;gap:26px;padding-block:8px 40px}
+.nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:10px 12px 10px 20px;border:1px solid var(--line);border-radius:999px;background:#0A0A0A}
+.brand{display:flex;align-items:center;gap:10px}
+.wm{font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:-.02em}
+.wm b{color:var(--accent);font-weight:800}
+.nav-tag{color:var(--muted);font-size:14px;flex:1}
+.nav-cta{background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:14px;padding:10px 18px;border-radius:999px}
+.mark{width:28px;height:28px;border-radius:7px;background:var(--accent);display:grid;place-items:center}
+.mark svg{display:block}
+.mast-meta{display:flex;flex-wrap:wrap;gap:8px 22px}
+.mast-meta span{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
+.mast-meta b{color:var(--fg);font-weight:500}
+.lede{font-size:clamp(17px,2vw,21px);line-height:1.5;color:var(--muted);max-width:70ch}
+.lede strong{color:var(--fg);font-weight:600}
+
+/* scenario switch */
+.switch{display:inline-flex;gap:4px;padding:5px;background:var(--surface);border:1px solid var(--line);border-radius:999px;flex-wrap:wrap}
+.switch button{font:600 14px/1 var(--f-body);color:var(--muted);background:transparent;border:0;border-radius:999px;padding:10px 18px;cursor:pointer;display:flex;gap:8px;align-items:baseline}
+.switch button .num{font-size:12px;font-weight:500}
+.switch button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.switch button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sticky-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.sticky-bar .lbl{font-size:13px;color:var(--muted)}
+
+/* kpi tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.tile{background:var(--surface);padding:16px 18px;display:grid;gap:4px;align-content:start}
+.tile .v{font-family:var(--f-display);font-size:30px;font-weight:800;letter-spacing:-.02em}
+.tile .s{font-size:12.5px;color:var(--muted)}
+.tile.hl .v{color:var(--accent)}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:20px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-body);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--raise);white-space:nowrap}
+td.r,th.r{text-align:right}
+td.num{white-space:nowrap}
+tr:last-child td{border-bottom:0}
+tfoot td{font-weight:600;background:var(--raise)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+
+/* allocation bar */
+.alloc{display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.alloc div{height:100%;transition:flex-grow .35s ease}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted)}
+
+/* stage split */
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px 16px;display:grid;gap:8px;min-width:0}
+.meter{height:6px;border-radius:3px;background:var(--raise);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);transition:width .35s ease}
+
+/* diagram */
+.diagram{overflow-x:auto;border:1px solid var(--line);border-radius:20px;background:var(--surface);padding:18px}
+.diagram svg{display:block;min-width:860px;width:100%;height:auto}
+.diagram text{font-family:var(--f-body)}
+
+/* grid cards */
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px;display:grid;gap:10px;align-content:start;min-width:0}
+.card ul{margin:0;padding-left:18px;display:grid;gap:5px;color:var(--muted);font-size:14px}
+.card ul b{color:var(--fg);font-weight:600}
+.chip{justify-self:start;display:inline-flex;align-items:center;gap:6px;font-family:var(--f-body);font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--raise);color:var(--muted);border:1px solid var(--line)}
+.chip.eco{background:var(--eco-soft);color:var(--eco);border-color:transparent}
+.chip.acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.chip.warn{color:var(--warn)}
+.chip.crit{color:var(--crit)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+
+/* playbook */
+.play{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;padding:22px;background:var(--surface);border:1px solid var(--line);border-radius:20px}
+.play-side{display:grid;gap:10px;align-content:start}
+.play-side .bud{font-family:var(--f-display);font-weight:800;font-size:28px;letter-spacing:-.02em}
+.play-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px}
+.play-body h4{margin:0 0 6px;font-family:var(--f-body);font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.play-body ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px}
+.play-body .wide{grid-column:1/-1}
+.callout{border:1px solid rgba(220,250,106,.35);background:#12160A;border-radius:20px;padding:16px 18px;display:grid;gap:6px}
+.callout.warn{border-color:var(--warn);background:transparent}
+.callout b{font-weight:600}
+
+/* timeline */
+.flight{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.phase{border-top:3px solid var(--line-2);padding-top:12px;display:grid;gap:8px;align-content:start;min-width:0}
+.phase.on{border-top-color:var(--accent)}
+.phase ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--muted);display:grid;gap:4px}
+
+.risk-sev{width:8px;border-radius:4px;align-self:stretch}
+.risk{display:grid;grid-template-columns:8px minmax(0,1fr);gap:14px;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:20px}
+.risks{display:grid;gap:10px}
+
+footer{border-top:1px solid var(--line);padding-top:24px;display:grid;gap:10px;font-size:13px;color:var(--muted)}
+footer ol{margin:0;padding-left:18px;display:grid;gap:4px}
+
+@media (max-width:860px){
+  .grid3{grid-template-columns:1fr}
+  .flight{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .play{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .grid2,.play-body,.stages,.flight{grid-template-columns:1fr}
+  .tile .v{font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* ad examples */
+.angles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ang{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);min-width:0}
+.ang-n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:800;font-size:13px}
+.ang b{display:block;font-size:14px}.ang span{font-size:13px;color:var(--muted)}
+.plats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.plats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.plat{all:unset;box-sizing:border-box;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:6px;transition:background .15s,border-color .15s}
+.plat:hover{background:var(--raise)}
+.plat:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.plat[aria-expanded="true"]{background:#12160A;border-color:var(--accent)}
+.plat .pn{font-weight:700;font-size:16px}
+.plat .pf{font-size:12.5px;color:var(--muted)}
+.plat .pc{font-size:13px;color:var(--accent);font-weight:600;margin-top:4px}
+.adpanel{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:22px}
+.adpanel .ph-h{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.adpanel .ph-h h3{font-size:20px}
+.closeb{font:600 13px var(--f-body);color:var(--fg);background:var(--raise);border:1px solid var(--line-2);border-radius:999px;padding:7px 16px;cursor:pointer}
+.closeb:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mocks{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;min-width:0}
+.mock{display:grid;gap:8px;min-width:0;max-width:100%}
+.mock .cap{font-size:11.5px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.brief{background:var(--raise);border-radius:16px;padding:16px;display:grid;gap:12px;align-content:start}
+.brief dl{margin:0;display:grid;gap:10px}
+.brief dt{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.brief dd{margin:2px 0 0;font-size:14px;line-height:20px}
+/* host frames: neutral light surfaces standing in for each platform */
+.host{--h-bg:#ffffff;--h-fg:#16171a;--h-mut:#6a6e75;--h-line:#e4e6ea;background:var(--h-bg);color:var(--h-fg);border-radius:14px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden;max-width:100%}
+.host .meta{font-size:12px;color:var(--h-mut)}
+.lbad{background:#000;color:#F2F1EC;font-family:var(--f-body);overflow:hidden;max-width:100%}
+.lbad .hd{font-family:var(--f-display);font-weight:900;letter-spacing:-.04em;line-height:.98}
+.lbad .lime{color:#DCFA6A}
+.cta{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:var(--f-body);font-weight:700;font-size:13px;border-radius:999px;padding:8px 16px;background:#DCFA6A;color:#0A0A0A;white-space:nowrap}
+.fine{font-size:9.5px;color:#8C8C86;line-height:1.3}
+.wm-s{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-display);font-weight:800;letter-spacing:-.02em;color:#F2F1EC;white-space:nowrap}
+.wm-s b{color:#DCFA6A;font-weight:800}
+.rcard{background:#0E0E0E;border:1px solid #262626;border-radius:12px;padding:10px;display:grid;gap:6px;color:#F2F1EC;font-family:var(--f-body)}
+.rcard .bk{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#A3A39C}
+.rcard .bk b{color:#F2F1EC;font-weight:600}
+.rcard .rt{color:#DCFA6A;font-weight:700;font-size:12px}
+.rcard .amt{font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:-.03em}
+.rcard .amt small{font-size:11px;color:#A3A39C;font-weight:600;letter-spacing:0}
+.rcard .bars{display:flex;align-items:flex-end;gap:3px;height:28px}
+.rcard .bars i{flex:1;background:#2A2F1A;border-radius:2px}
+.rcard .bars i:last-child{background:#DCFA6A}
+.rcard.sm{padding:8px;gap:4px}.rcard.sm .amt{font-size:18px}.rcard.sm .bars{height:16px}
+.rcard .ex{font-size:9px;color:#6E6E68;text-transform:uppercase;letter-spacing:.08em}
+.bonus{border:1px solid rgba(220,250,106,.4);background:#12160A;border-radius:10px;padding:8px 10px;font-size:11.5px;color:#E6F0C2;display:flex;gap:8px;align-items:center}
+.chk{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:#A3A39C}
+.chk span::before{content:"✓ ";color:#DCFA6A}
+@media (max-width:900px){.adpanel{grid-template-columns:1fr}.angles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.angles{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="nav"><div class="brand"><svg width="30" height="26" viewBox="0 0 30 26" fill="none" aria-hidden="true"><path d="M3 23V9l7-6v14" stroke="var(--fg)" stroke-width="3" stroke-linejoin="round"/><path d="M14 3h13l-5 6 5 6H14" fill="var(--accent)"/></svg><span class="wm">LOTS <b>BACK</b></span></div><span class="nav-tag">Media plan</span><span class="nav-cta">Created by Bruno C.</span></div>
+  <div style="display:grid;gap:14px">
+    <span class="eyebrow">Paid media plan · Nov 2026 – Jan 2027</span>
+    <h1>Cashback on every eligible lot, bought smarter.</h1>
+    <p class="lede">A five-channel plan built around one advantage no competitor in forex cashback has: <strong>live behavioral data from TradeLocker, FunderPro, NextTrade and WhatProp</strong>. We use it to find active traders before they search, then capture them where they already read, chat and trade. The plan is optimized for <strong>cost per account connection (CPAC)</strong> at the four partner brokers: PU Prime ($7/lot), Vantage ($6), VT Markets ($5) and Star Trader ($5).</p>
+  </div>
+  <div class="mast-meta">
+    <span>Created by <b>Bruno C.</b></span>
+    <span>Version <b>1.0 · 28 Oct 2026</b></span>
+    <span>Budgets <b>$25K · $35K · $45K / month</b></span>
+    <span>Primary KPI <b>CPAC</b></span>
+  </div>
+</header>
+
+<div class="sticky-bar">
+  <span class="lbl">Scenario</span>
+  <div class="switch" role="group" aria-label="Budget scenario">
+    <button type="button" id="sc-A" data-s="A" aria-pressed="false">Validate <span class="num">$25K</span></button>
+    <button type="button" id="sc-B" data-s="B" aria-pressed="true">Scale <span class="num">$35K</span></button>
+    <button type="button" id="sc-C" data-s="C" aria-pressed="false">Dominate <span class="num">$45K</span></button>
+  </div>
+  <span class="lbl" id="sc-note"></span>
+</div>
+
+<!-- 1 SUMMARY -->
+<section id="summary">
+  <div class="sec-head">
+    <span class="eyebrow">Plan at a glance</span>
+    <h2 id="sum-title">Monthly forecast</h2>
+    <p class="muted" id="sum-text"></p>
+  </div>
+  <div class="tiles" id="tiles"></div>
+  <p class="muted" style="font-size:13px">Forecasts are modeled from channel benchmarks for finance and trading inventory in non-EU/UK geos, before any LotsBack history exists. Treat them as a starting range (±30%) to be replaced by real data after week 4. All assumptions are listed at the end.</p>
+</section>
+
+<!-- 2 CORE STRATEGY -->
+<section id="core">
+  <div class="sec-head">
+    <span class="eyebrow">Core strategy</span>
+    <h2>The ecosystem data engine</h2>
+    <p class="muted">Every product in the Owen.com group already sees the exact person LotsBack needs: someone who trades real volume on MT5 or TradeLocker. Instead of buying generic "forex interest" audiences, we pipe those signals into one segmentation layer and push the segments into programmatic, native, Google and Meta. Paid media then spends most of its money on people who are already trading.</p>
+  </div>
+
+  <div class="diagram" role="img" aria-label="Data flow from ecosystem products through a server-side collection and segmentation layer into ad platforms">
+    <svg viewBox="0 0 1040 430" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--dim)"/></marker>
+      </defs>
+      <text x="20" y="22" fill="var(--muted)" font-size="11" letter-spacing="1.4" font-family="IBM Plex Mono, monospace">1 · ECOSYSTEM SOURCES</text>
+      <text x="370" y="22" fill="var(--muted)" font-size="11" letter-spacing="1.4" font-family="IBM Plex Mono, monospace">2 · COLLECT + SEGMENT</text>
+      <text x="740" y="22" fill="var(--muted)" font-size="11" letter-spacing="1.4" font-family="IBM Plex Mono, monospace">3 · ACTIVATE</text>
+
+      <g font-size="13">
+        <rect x="20" y="40" width="250" height="78" rx="10" fill="var(--raise)" stroke="var(--line-2)"/>
+        <text x="36" y="64" fill="var(--fg)" font-weight="700">TradeLocker + Hub</text>
+        <text x="36" y="84" fill="var(--muted)" font-size="12">Platform sessions, account opened,</text>
+        <text x="36" y="101" fill="var(--muted)" font-size="12">broker directory views, MT5 switchers</text>
+
+        <rect x="20" y="132" width="250" height="78" rx="10" fill="var(--raise)" stroke="var(--line-2)"/>
+        <text x="36" y="156" fill="var(--fg)" font-weight="700">FunderPro</text>
+        <text x="36" y="176" fill="var(--muted)" font-size="12">Challenge checkout, passed / failed,</text>
+        <text x="36" y="193" fill="var(--muted)" font-size="12">funded traders, payout requests</text>
+
+        <rect x="20" y="224" width="250" height="78" rx="10" fill="var(--raise)" stroke="var(--line-2)"/>
+        <text x="36" y="248" fill="var(--fg)" font-weight="700">WhatProp</text>
+        <text x="36" y="268" fill="var(--muted)" font-size="12">Prop and broker comparison reads,</text>
+        <text x="36" y="285" fill="var(--muted)" font-size="12">payout-legitimacy research</text>
+
+        <rect x="20" y="316" width="250" height="78" rx="10" fill="var(--raise)" stroke="var(--line-2)"/>
+        <text x="36" y="340" fill="var(--fg)" font-weight="700">NextTrade + LotsBack site</text>
+        <text x="36" y="360" fill="var(--muted)" font-size="12">Trading-tool usage, LotsBack visits,</text>
+        <text x="36" y="377" fill="var(--muted)" font-size="12">calculator use, abandoned connects</text>
+      </g>
+
+      <g>
+        <rect x="370" y="40" width="300" height="110" rx="12" fill="var(--eco-soft)" stroke="var(--eco)"/>
+        <text x="388" y="66" fill="var(--fg)" font-size="14" font-weight="700">Server-side tagging (sGTM)</text>
+        <text x="388" y="88" fill="var(--muted)" font-size="12">One shared event schema across domains</text>
+        <text x="388" y="106" fill="var(--muted)" font-size="12">Consent Mode v2 + group-wide consent flag</text>
+        <text x="388" y="124" fill="var(--muted)" font-size="12">Hashed email / UID2 · no raw PII to vendors</text>
+
+        <rect x="370" y="168" width="300" height="226" rx="12" fill="var(--eco-soft)" stroke="var(--eco)"/>
+        <text x="388" y="194" fill="var(--fg)" font-size="14" font-weight="700">Segmentation layer (CDP / BigQuery)</text>
+        <g font-size="12" fill="var(--fg)">
+          <text x="388" y="222">S1  Live-volume traders</text>
+          <text x="388" y="246">S2  Funded prop traders</text>
+          <text x="388" y="270">S3  Challenge buyers (30d)</text>
+          <text x="388" y="294">S4  Platform switchers to TL / MT5</text>
+          <text x="388" y="318">S5  Broker / prop researchers</text>
+          <text x="388" y="342">S6  LotsBack drop-offs</text>
+          <text x="388" y="372" fill="var(--muted)">+ Lookalike seeds from S1 + S2</text>
+        </g>
+      </g>
+
+      <g font-size="13">
+        <rect x="740" y="40" width="280" height="64" rx="10" fill="var(--raise)" stroke="var(--line-2)"/>
+        <text x="756" y="64" fill="var(--fg)" font-weight="700">StackAdapt / DV360</text>
+        <text x="756" y="84" fill="var(--muted)" font-size="12">IAB banners + native · deal IDs, UID2</text>
+        <rect x="740" y="116" width="280" height="64" rx="10" fill="var(--raise)" stroke="var(--line-2)"/>
+        <text x="756" y="140" fill="var(--fg)" font-weight="700">Google PMax</text>
+        <text x="756" y="160" fill="var(--muted)" font-size="12">Customer Match as audience signals</text>
+        <rect x="740" y="192" width="280" height="64" rx="10" fill="var(--raise)" stroke="var(--line-2)"/>
+        <text x="756" y="216" fill="var(--fg)" font-weight="700">Meta · Instagram</text>
+        <text x="756" y="236" fill="var(--muted)" font-size="12">Custom + lookalike audiences, CAPI</text>
+        <rect x="740" y="268" width="280" height="64" rx="10" fill="var(--raise)" stroke="var(--line-2)"/>
+        <text x="756" y="292" fill="var(--fg)" font-weight="700">BabyPips · Telegram</text>
+        <text x="756" y="312" fill="var(--muted)" font-size="12">Contextual reach; tagged to feed S5 / S6</text>
+        <rect x="740" y="344" width="280" height="50" rx="10" fill="var(--accent-soft)" stroke="var(--accent)"/>
+        <text x="756" y="374" fill="var(--fg)" font-weight="700">Conversions back to bidding</text>
+      </g>
+
+      <g stroke="var(--dim)" stroke-width="1.4" fill="none" marker-end="url(#ar)">
+        <path d="M270 79 C320 79 320 95 368 95"/>
+        <path d="M270 171 C320 171 320 105 368 105"/>
+        <path d="M270 263 C320 263 320 115 368 115"/>
+        <path d="M270 355 C325 355 325 125 368 125"/>
+        <path d="M520 150 L520 166"/>
+        <path d="M670 230 C705 230 705 72 738 72"/>
+        <path d="M670 250 C705 250 705 148 738 148"/>
+        <path d="M670 270 C705 270 705 224 738 224"/>
+      </g>
+      <path d="M880 330 L880 342" stroke="var(--dim)" stroke-width="1.4" fill="none" marker-end="url(#ar)"/>
+      <path d="M740 369 C560 420 120 425 118 396" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 4" fill="none" marker-end="url(#ar)"/>
+      <text x="420" y="420" fill="var(--accent)" font-size="11" font-family="IBM Plex Mono, monospace">account_connected · first_lot · bonus_unlocked feed back as conversions + new seeds</text>
+    </svg>
+  </div>
+
+  <div class="callout">
+    <b>Why this sits at the center of the plan</b>
+    <p class="muted">In the model, ecosystem retargeting inside programmatic converts at roughly <b id="rt-cpac" class="mono" style="color:var(--fg)"></b> per connected account, against <b id="ctx-cpac" class="mono" style="color:var(--fg)"></b> for open contextual inventory. The data is the efficiency. Without it, programmatic would be the most expensive line in the plan instead of the cheapest at the bottom of the funnel.</p>
+  </div>
+
+  <h3>Audience segments</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Segment</th><th>Source signal</th><th>Window</th><th>Primary channels</th><th>Message angle</th></tr></thead>
+      <tbody>
+        <tr><td><b>S1 · Live-volume traders</b></td><td>TradeLocker live account with closed trades; MT5 logins via Hub. Priority: users already at a partner broker</td><td class="num">30 d</td><td>Programmatic RT, Meta CA, PMax signal</td><td>Cost reduction: "Up to $7 back per eligible lot, win or lose"</td></tr>
+        <tr><td><b>S2 · Funded prop traders</b></td><td>FunderPro funded / payout events</td><td class="num">60 d</td><td>Programmatic RT, Meta CA</td><td>Volume: "Scale your volume, scale your tier"</td></tr>
+        <tr><td><b>S3 · Challenge buyers</b></td><td>FunderPro checkout, challenge started</td><td class="num">30 d</td><td>Programmatic RT, Meta CA</td><td>Security + trading costs on their live broker account <span class="chip warn">eligibility check</span></td></tr>
+        <tr><td><b>S4 · Platform switchers</b></td><td>TradeLocker Hub broker directory, MT5 migration pages</td><td class="num">14 d</td><td>Programmatic RT, PMax signal</td><td>"Already on TradeLocker or MT5? Connect in 60 seconds"</td></tr>
+        <tr><td><b>S5 · Researchers</b></td><td>WhatProp comparisons, BabyPips and Telegram click-throughs</td><td class="num">14 d</td><td>Native, Programmatic RT</td><td>Trust: read-only, zero access to capital</td></tr>
+        <tr><td><b>S6 · LotsBack drop-offs</b></td><td>Signed up but no broker connected; connected but under 5 lots</td><td class="num">10 d</td><td>Meta RT, Programmatic RT, email</td><td>$50 bonus countdown: 5 lots in 10 days</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <span class="chip eco">Data governance</span>
+      <h3>Second-party data needs a legal basis</h3>
+      <ul>
+        <li>Sharing between group brands is <b>second-party data</b>. Each source site's privacy notice must name group-wide marketing use, and the consent banner must carry a "group partners" purpose.</li>
+        <li>Only consented, hashed identifiers leave the server container. LGPD (BR), POPIA (ZA) and NDPR (NG) all apply in priority geos.</li>
+        <li>Suppress existing LotsBack connected users from all prospecting to avoid paying for owned users.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="chip eco">Technical build</span>
+      <h3>Shared event schema</h3>
+      <ul>
+        <li><b>Ecosystem:</b> <span class="mono">tl_account_opened</span>, <span class="mono">tl_trade_closed</span>, <span class="mono">fp_challenge_started</span>, <span class="mono">fp_funded</span>, <span class="mono">wp_compare_view</span></li>
+        <li><b>LotsBack:</b> <span class="mono">lb_signup</span>, <span class="mono">lb_account_connected</span>, <span class="mono">lb_first_lot</span>, <span class="mono">lb_bonus_unlocked</span>, <span class="mono">lb_tier_up</span></li>
+        <li>Cross-domain via sGTM on first-party subdomains (<span class="mono">data.*</span>) with a shared group ID, not third-party cookies.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 3 FUNNEL -->
+<section id="funnel">
+  <div class="sec-head">
+    <span class="eyebrow">Funnel architecture</span>
+    <h2>Who does what, stage by stage</h2>
+    <p class="muted">LotsBack's funnel has one more step than a typical lead funnel. A sign-up is worth little until the trader connects a broker account and closes lots. Each channel is judged on the stage it actually serves.</p>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Stage</th><th>Goal</th><th>Channels</th><th>Creative angle (from copy deck)</th><th>Judged on</th></tr></thead>
+      <tbody>
+        <tr><td><b>Awareness</b></td><td>Teach that rebates exist on every lot</td><td>Contextual PMPs, BabyPips newsletter, Telegram posts, Meta Reels</td><td>Strategy 1: cost reduction</td><td>Reach in priority geos, CPM, assisted connections</td></tr>
+        <tr><td><b>Consideration</b></td><td>Remove the fear of linking an account</td><td>Native, lookalikes, BabyPips display, Telegram Ads</td><td>Strategy 2: read-only security</td><td>Calculator use, sign-up rate, CPL</td></tr>
+        <tr><td><b>Conversion</b></td><td>Get the broker account connected</td><td>Ecosystem retargeting, PMax, Meta CA</td><td>Strategy 4: ecosystem synergy</td><td><b>CPAC</b></td></tr>
+        <tr><td><b>Activation</b></td><td>5 verified lots in 10 days</td><td>S6 retargeting, email, in-app prompts</td><td>Strategy 3: $50 bonus</td><td>Cost per activated trader, 10-day activation rate</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <p class="eyebrow" style="margin-bottom:10px">Budget by stage · <span id="stage-sc"></span></p>
+    <div class="stages" id="stages"></div>
+  </div>
+</section>
+
+<!-- 4 BUDGET -->
+<section id="budget">
+  <div class="sec-head">
+    <span class="eyebrow">Investment scenarios</span>
+    <h2 id="bud-title">Channel allocation</h2>
+    <p class="muted" id="bud-text"></p>
+  </div>
+  <div class="alloc" id="alloc" aria-hidden="true"></div>
+  <div class="legend" id="legend"></div>
+  <div class="tbl-wrap">
+    <table id="alloc-tbl">
+      <thead><tr><th>Channel</th><th class="r">Budget</th><th class="r">Share</th><th class="r">Impr.</th><th class="r">Clicks</th><th class="r">Sign-ups</th><th class="r">Connected</th><th class="r">CPAC</th><th class="r">Activated</th></tr></thead>
+      <tbody></tbody>
+      <tfoot></tfoot>
+    </table>
+  </div>
+
+  <h3>Side by side</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Scenario</th><th class="r">Monthly</th><th class="r">Connected</th><th class="r">CPAC</th><th class="r">Activated</th><th class="r">Cost / activated</th><th class="r">Marginal CPAC</th><th>When to choose it</th></tr></thead>
+      <tbody id="compare"></tbody>
+    </table>
+  </div>
+  <div class="grid3">
+    <div class="card"><span class="chip">Validate · $25K</span><p class="muted" style="font-size:14px">Concentrates on ecosystem retargeting and PMax. Contextual reach is kept small. Lowest CPAC, but the retargeting pool grows slowly because little new demand is created.</p></div>
+    <div class="card"><span class="chip acc">Scale · $35K · recommended</span><p class="muted" style="font-size:14px">Adds lookalike and contextual weight to refill the ecosystem pools, plus a second Telegram and BabyPips push. CPAC rises about 10% while connections grow about 28%. Best balance of volume and efficiency for launch.</p></div>
+    <div class="card"><span class="chip">Dominate · $45K</span><p class="muted" style="font-size:14px">Buys share of voice on Forex Factory, Myfxbook and FXStreet PMPs and doubles BabyPips sends. Retargeting pools start to saturate, so each extra $10K buys fewer accounts. Use once LTV is proven.</p></div>
+  </div>
+</section>
+
+<!-- 5 PLAYBOOKS -->
+<section id="channels">
+  <div class="sec-head">
+    <span class="eyebrow">Channel playbooks</span>
+    <h2>How each channel is bought and run</h2>
+    <p class="muted">Budgets shown update with the scenario selected above.</p>
+  </div>
+  <div style="display:grid;gap:14px" id="plays"></div>
+</section>
+
+<!-- 6 MEASUREMENT -->
+<section id="measure">
+  <div class="sec-head">
+    <span class="eyebrow">Measurement</span>
+    <h2>Optimize on connections, report on volume</h2>
+    <p class="muted">Platforms will optimize toward whatever event we send them. Sign-ups are cheap and noisy, so the bidding signal is the connected account, with closed lots as the value signal once volume exists.</p>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Event</th><th>Fires when</th><th>Sent to</th><th>Role in bidding</th><th class="r">Value</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">lb_signup</td><td>Email verified</td><td>GA4, Google, Meta, StackAdapt</td><td>Secondary (observe only)</td><td class="r num">$0</td></tr>
+        <tr><td class="mono">lb_account_connected</td><td>Read-only MT5 / TradeLocker link verified</td><td>All platforms via sGTM + CAPI</td><td><b>Primary conversion</b></td><td class="r num">$40</td></tr>
+        <tr><td class="mono">lb_first_lot</td><td>First eligible lot verified by broker</td><td>Offline upload (Google), CAPI</td><td>Value signal</td><td class="r num">$20</td></tr>
+        <tr><td class="mono">lb_bonus_unlocked</td><td>5 lots inside 10 days</td><td>Offline upload, CAPI, CDP</td><td>Value signal + lookalike seed</td><td class="r num">$60</td></tr>
+        <tr><td class="mono">lb_tier_up</td><td>Trader moves Base → higher tier</td><td>CDP only</td><td>LTV reporting, seed refresh</td><td class="r num">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Attribution blind spots to plan for</h3>
+      <ul>
+        <li><b>Telegram and BabyPips newsletter</b> have no pixel. Use unique UTMs plus channel-specific promo landing pages, and read their effect through branded search lift and S5 pool growth.</li>
+        <li><b>PMax</b> will claim retargeting conversions. Report PMax new-user connections separately using the <span class="mono">new_customer</span> flag fed from the S6 suppression list.</li>
+        <li><b>Activation happens days later</b>, after click windows on Meta close. Judge Meta on 7-day click connections plus offline uploads, not on platform-reported activations.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Reporting cadence</h3>
+      <ul>
+        <li><b>Daily:</b> spend pacing, CPAC by channel, disapprovals.</li>
+        <li><b>Weekly:</b> 10-day activation cohort, segment pool sizes (S1–S6), creative fatigue.</li>
+        <li><b>Monthly:</b> cost per activated trader, lots per cohort, payback against margin per lot, scenario move decision.</li>
+        <li>Holdout: keep 10% of S1 out of all paid media for 6 weeks to measure true incrementality of ecosystem retargeting.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 7 ECONOMICS -->
+<section id="economics">
+  <div class="sec-head">
+    <span class="eyebrow">Unit economics</span>
+    <h2>What a connected trader has to be worth</h2>
+    <p class="muted">LotsBack's margin is the spread between what brokers pay per lot and what the trader receives. The figures below are planning assumptions to replace with finance data. They set the CPAC guardrails the media team works to.</p>
+  </div>
+  <div class="tiles">
+    <div class="tile"><span class="eyebrow">Net margin / lot</span><span class="v">$3.00</span><span class="s">Assumption: broker rate minus payout</span></div>
+    <div class="tile"><span class="eyebrow">Lots / active trader / mo</span><span class="v">20</span><span class="s">Retail + funded mix</span></div>
+    <div class="tile"><span class="eyebrow">Active lifetime</span><span class="v">4 mo</span><span class="s">Before churn</span></div>
+    <div class="tile"><span class="eyebrow">Net LTV / activated</span><span class="v">$190</span><span class="s">$240 margin minus $50 bonus</span></div>
+    <div class="tile hl"><span class="eyebrow">Breakeven CPAC</span><span class="v">$85</span><span class="s">$190 × 45% activation</span></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Scenario</th><th class="r">Cost / activated</th><th class="r">LTV : CAC</th><th class="r">Payback</th><th class="r">Monthly margin added (run-rate)</th></tr></thead>
+      <tbody id="econ"></tbody>
+    </table>
+  </div>
+  <div class="grid2">
+    <div class="card"><span class="chip acc">Scale rule</span><p style="font-size:14px">Move up a scenario when blended CPAC holds under <b class="mono">$45</b> for two straight weeks and 10-day activation is at or above <b class="mono">40%</b>.</p></div>
+    <div class="card"><span class="chip crit">Stop rule</span><p style="font-size:14px">Cut any channel whose CPAC passes <b class="mono">$85</b> (breakeven) after it has spent 3× its target CPA, except contextual awareness, which is judged on assisted connections.</p></div>
+  </div>
+</section>
+
+<!-- 8 FLIGHT -->
+<section id="flight">
+  <div class="sec-head">
+    <span class="eyebrow">90-day flight plan</span>
+    <h2>From tracking build to scale</h2>
+  </div>
+  <div class="flight">
+    <div class="phase on"><span class="eyebrow">Wk 1–2 · Build</span><h3>Data and tracking</h3><ul><li>sGTM on LotsBack + ecosystem subdomains</li><li>Consent purpose added group-wide</li><li>S1–S6 built, seeds exported</li><li>Google and Meta advertiser checks</li><li>BabyPips and Telegram channels booked</li></ul></div>
+    <div class="phase on"><span class="eyebrow">Wk 3–6 · Learn</span><h3>Launch on Validate weights</h3><ul><li>Programmatic RT + PMax first, Meta in week 4</li><li>First BabyPips send, 2 Telegram posts</li><li>3 angles × 2 languages per channel</li><li>Conversions switched to lb_account_connected</li></ul></div>
+    <div class="phase"><span class="eyebrow">Wk 7–10 · Optimize</span><h3>Shift to winners</h3><ul><li>Reserve moved to best CPAC line</li><li>Lookalikes rebuilt from bonus-unlocked seeds</li><li>Contextual PMPs kept only where assisted share is proven</li><li>Scale-rule check for $35K</li></ul></div>
+    <div class="phase"><span class="eyebrow">Wk 11–13 · Scale</span><h3>Commit the quarter</h3><ul><li>Value-based bidding on lots</li><li>Second BabyPips send, wider Telegram list</li><li>Holdout readout on ecosystem RT</li><li>Q1 budget set from real LTV</li></ul></div>
+  </div>
+</section>
+
+<!-- 9 ADS -->
+<section id="ads">
+  <div class="sec-head">
+    <span class="eyebrow">Appendix</span>
+    <h2>Ad examples by platform</h2>
+    <p class="muted">Mockups of the first creative wave, written from the four copy angles: cost reduction, read-only security, active-trader volume and ecosystem retargeting. Rates follow what lotsback.com shows today, so every ad says "up to $7 per eligible lot". Pick a platform to see its examples and the creative brief behind them.</p>
+  </div>
+  <div class="angles">
+    <div class="ang"><span class="ang-n">1</span><div><b>Cost reduction</b><span>Offset trading costs on every closed lot</span></div></div>
+    <div class="ang"><span class="ang-n">2</span><div><b>Read-only security</b><span>Zero access to your trading capital</span></div></div>
+    <div class="ang"><span class="ang-n">3</span><div><b>Active trader volume</b><span>Weekly payouts and the $50 bonus</span></div></div>
+    <div class="ang"><span class="ang-n">4</span><div><b>Ecosystem retargeting</b><span>Already on TradeLocker or MT5?</span></div></div>
+  </div>
+  <div class="plats" id="plats"></div>
+  <div class="adpanel" id="adpanel" hidden></div>
+</section>
+
+<footer>
+  <b style="color:var(--fg)">Assumptions and sources</b>
+  <ol>
+    <li>Channel benchmarks (CPM, CTR, conversion rates) are planning estimates for finance inventory in the listed geos. Scenario B and C apply 7% and 14% efficiency decay for audience saturation.</li>
+    <li>Programmatic split: ecosystem retargeting 45 / 40 / 35%, lookalikes 25 / 30 / 35%, contextual PMPs 30% for A / B / C. Reserve is redeployed to the best CPAC line at 85% efficiency.</li>
+    <li>Activation (5 lots in 10 days) assumed at 45% of connections. Unit economics in section 7 are placeholders pending LotsBack finance data.</li>
+    <li>Telegram Ads: Telegram publishes no minimum budget and direct contracts are reported near €2M, so buying runs through a reseller (first top-ups from about €250–500); finance targeting CPMs are reported around $3–6. Source: <a href="https://telegramadsanalytics.com/wiki/telegram-ads-pricing-guide">Telegram Ads Analytics pricing guide</a>.</li>
+    <li>BabyPips newsletter and display prices are estimates pending their media kit.</li>
+    <li>Broker rates and account eligibility taken from the lotsback.com homepage as of 28 Oct 2026: PU Prime $7, Vantage $6, VT Markets $5, Star Trader $5 per lot; Standard/STP only.</li>
+  </ol>
+</footer>
+</div>
+
+<script>
+const M = {"A": {"ch": {"prog": {"spend": 8000, "impr": 1023529, "clicks": 4208, "su": 432, "cn": 182, "act": 82, "cpm": 7.82, "cpl": 18.5, "cpac": 44.0, "cpaa": 97.7}, "pmax": {"spend": 5500, "impr": 327381, "clicks": 3929, "su": 393, "cn": 157, "act": 71, "cpm": 16.8, "cpl": 14.0, "cpac": 35.0, "cpaa": 77.8}, "meta": {"spend": 4500, "impr": 642857, "clicks": 5786, "su": 463, "cn": 139, "act": 62, "cpm": 7.0, "cpl": 9.7, "cpac": 32.4, "cpaa": 72.0}, "bp": {"spend": 4000, "impr": 526316, "clicks": 2105, "su": 211, "cn": 88, "act": 40, "cpm": 7.6, "cpl": 19.0, "cpac": 45.2, "cpaa": 100.5}, "tg": {"spend": 2000, "impr": 363636, "clicks": 2182, "su": 153, "cn": 49, "act": 22, "cpm": 5.5, "cpl": 13.1, "cpac": 40.9, "cpaa": 90.9}, "res": {"spend": 1000, "impr": 0, "clicks": 0, "su": 81, "cn": 32, "act": 15, "cpm": null, "cpl": 12.3, "cpac": 30.9, "cpaa": 68.6}}, "tot": {"spend": 25000, "impr": 2883720, "clicks": 18209, "su": 1732, "cn": 648, "act": 291, "cpm": 8.67, "cpl": 14.4, "cpac": 38.6, "cpaa": 85.8}, "prog_sub": {"prog_rt": {"spend": 3600, "impr": 423529, "clicks": 2541, "su": 305, "cn": 137, "act": 62, "cpm": 8.5, "cpl": 11.8, "cpac": 26.2, "cpaa": 58.3}, "prog_lal": {"spend": 2000, "impr": 333333, "clicks": 1000, "su": 80, "cn": 29, "act": 13, "cpm": 6.0, "cpl": 25.0, "cpac": 69.4, "cpaa": 154.3}, "prog_ctx": {"spend": 2400, "impr": 266667, "clicks": 667, "su": 47, "cn": 16, "act": 7, "cpm": 9.0, "cpl": 51.4, "cpac": 151.3, "cpaa": 336.1}}, "best": "prog_rt"}, "B": {"ch": {"prog": {"spend": 12000, "impr": 1564706, "clicks": 6188, "su": 577, "cn": 241, "act": 108, "cpm": 7.67, "cpl": 20.8, "cpac": 49.9, "cpaa": 110.9}, "pmax": {"spend": 7000, "impr": 416667, "clicks": 5000, "su": 465, "cn": 186, "act": 84, "cpm": 16.8, "cpl": 15.1, "cpac": 37.6, "cpaa": 83.6}, "meta": {"spend": 6000, "impr": 857143, "clicks": 7714, "su": 574, "cn": 172, "act": 77, "cpm": 7.0, "cpl": 10.5, "cpac": 34.8, "cpaa": 77.4}, "bp": {"spend": 5000, "impr": 657895, "clicks": 2632, "su": 245, "cn": 103, "act": 46, "cpm": 7.6, "cpl": 20.4, "cpac": 48.6, "cpaa": 108.1}, "tg": {"spend": 3000, "impr": 545455, "clicks": 3273, "su": 213, "cn": 68, "act": 31, "cpm": 5.5, "cpl": 14.1, "cpac": 44.0, "cpaa": 97.8}, "res": {"spend": 2000, "impr": 0, "clicks": 0, "su": 151, "cn": 60, "act": 27, "cpm": null, "cpl": 13.3, "cpac": 33.2, "cpaa": 73.7}}, "tot": {"spend": 35000, "impr": 4041865, "clicks": 24807, "su": 2225, "cn": 830, "act": 373, "cpm": 8.66, "cpl": 15.7, "cpac": 42.2, "cpaa": 93.7}, "prog_sub": {"prog_rt": {"spend": 4800, "impr": 564706, "clicks": 3388, "su": 378, "cn": 170, "act": 77, "cpm": 8.5, "cpl": 12.7, "cpac": 28.2, "cpaa": 62.7}, "prog_lal": {"spend": 3600, "impr": 600000, "clicks": 1800, "su": 134, "cn": 48, "act": 22, "cpm": 6.0, "cpl": 26.9, "cpac": 74.7, "cpaa": 165.9}, "prog_ctx": {"spend": 3600, "impr": 400000, "clicks": 1000, "su": 65, "cn": 22, "act": 10, "cpm": 9.0, "cpl": 55.3, "cpac": 162.6, "cpaa": 361.4}}, "best": "prog_rt"}, "C": {"ch": {"prog": {"spend": 16000, "impr": 2125490, "clicks": 8086, "su": 681, "cn": 280, "act": 126, "cpm": 7.53, "cpl": 23.5, "cpac": 57.1, "cpaa": 126.9}, "pmax": {"spend": 8500, "impr": 505952, "clicks": 6071, "su": 522, "cn": 209, "act": 94, "cpm": 16.8, "cpl": 16.3, "cpac": 40.7, "cpaa": 90.4}, "meta": {"spend": 7500, "impr": 1071429, "clicks": 9643, "su": 663, "cn": 199, "act": 90, "cpm": 7.0, "cpl": 11.3, "cpac": 37.7, "cpaa": 83.7}, "bp": {"spend": 6000, "impr": 789474, "clicks": 3158, "su": 272, "cn": 114, "act": 51, "cpm": 7.6, "cpl": 22.1, "cpac": 52.6, "cpaa": 116.9}, "tg": {"spend": 4500, "impr": 818182, "clicks": 4909, "su": 296, "cn": 95, "act": 43, "cpm": 5.5, "cpl": 15.2, "cpac": 47.6, "cpaa": 105.7}, "res": {"spend": 2500, "impr": 0, "clicks": 0, "su": 174, "cn": 70, "act": 31, "cpm": null, "cpl": 14.4, "cpac": 35.9, "cpaa": 79.8}}, "tot": {"spend": 45000, "impr": 5310527, "clicks": 31868, "su": 2608, "cn": 966, "act": 435, "cpm": 8.47, "cpl": 17.3, "cpac": 46.6, "cpaa": 103.5}, "prog_sub": {"prog_rt": {"spend": 5600, "impr": 658824, "clicks": 3953, "su": 408, "cn": 184, "act": 83, "cpm": 8.5, "cpl": 13.7, "cpac": 30.5, "cpaa": 67.8}, "prog_lal": {"spend": 5600, "impr": 933333, "clicks": 2800, "su": 193, "cn": 69, "act": 31, "cpm": 6.0, "cpl": 29.1, "cpac": 80.7, "cpaa": 179.4}, "prog_ctx": {"spend": 4800, "impr": 533333, "clicks": 1333, "su": 80, "cn": 27, "act": 12, "cpm": 9.0, "cpl": 59.8, "cpac": 175.9, "cpaa": 390.9}}, "best": "prog_rt"}};
+const CH = {
+  prog:{name:"Programmatic · IAB banners + native", c:"--c-prog"},
+  pmax:{name:"Google PMax", c:"--c-pmax"},
+  meta:{name:"Meta · Instagram", c:"--c-meta"},
+  bp:{name:"BabyPips · newsletter + ad space", c:"--c-bp"},
+  tg:{name:"Telegram · Ads + selected channels", c:"--c-tg"},
+  res:{name:"Optimization reserve", c:"--c-res"}
+};
+const ORDER=["prog","pmax","meta","bp","tg","res"];
+const SC = {
+  A:{label:"Validate", budget:25000, note:"Prove CPAC on owned data", stage:[15,30,55],
+     text:"Spend goes where intent is already proven: ecosystem retargeting and PMax take over half the budget. Contextual buys are kept to a test size."},
+  B:{label:"Scale", budget:35000, note:"Recommended for launch", stage:[20,30,50],
+     text:"The extra $10K goes mostly into programmatic lookalikes and contextual PMPs. Their job is to refill the ecosystem retargeting pools, which saturate fastest."},
+  C:{label:"Dominate", budget:45000, note:"Use once LTV is proven", stage:[25,30,45],
+     text:"Share of voice on the main forex portals, two BabyPips sends and a wider Telegram list. Reach grows faster than connections: this is a demand-creation bet."}
+};
+const PLAY = {
+  prog:{role:"Core engine · all stages", sub:true, tags:["StackAdapt","DV360","UID2"],
+    target:["Ecosystem segments S1–S6 via hashed email / UID2 onboarding","Lookalikes from S1 + S2 seeds (refreshed bi-weekly)","Contextual PMPs: Forex Factory, Myfxbook, FXStreet, Investing.com forex sections"],
+    format:["IAB 300×250, 728×90, 320×50, 160×600, 300×600","Native in-feed (StackAdapt) for the security angle","Dynamic creative by segment and tier"],
+    buy:["Retargeting: CPA bidding on lb_account_connected after 50 conversions; viewable CPM before","Contextual: fixed-price PMPs, frequency cap 4/week","Brand-safety and geo allowlists applied at deal level"],
+    kpi:["CPAC by tactic","Assisted connections for contextual","Pool size per segment"]},
+  pmax:{role:"Conversion capture", tags:["No feed","Customer Match","Search themes"],
+    target:["Audience signals: S1, S4 Customer Match lists + custom segments on 'forex rebate', 'MT5 cashback', 'TradeLocker', plus partner-broker terms ('PU Prime cashback', 'Vantage rebate')","Search themes per language (EN, PT, ES)","Existing LotsBack users excluded"],
+    format:["3 asset groups: cost reduction, security, $50 bonus","Video assets 15s vertical + horizontal","Final URL expansion off; dedicated landing pages"],
+    buy:["Maximize conversions → tCPA $35 after 30 connections","Brand exclusions on 'LotsBack' to keep brand search clean","Weekly placement report; exclude apps and kids content"],
+    kpi:["New-user CPAC","Search vs Display share of spend","Conversion lag to first lot"]},
+  meta:{role:"Consideration + retargeting", tags:["Instagram only","CAPI","Reels"],
+    target:["Custom audiences S1, S2, S6","1–3% lookalikes from bonus-unlocked traders","Broad + Advantage+ audience in PT and ES geos"],
+    format:["Reels 9:16 with founder-style walkthrough of the 60-second connect","Stories with rate calculator CTA","Carousel: Base → Summit tier ladder"],
+    buy:["Optimize on lb_account_connected via CAPI","Cost cap at 1.2× target CPAC","Creative refresh every 14 days or at frequency 3+"],
+    kpi:["7-day click CPAC","Hook rate on Reels","S6 recovery rate"]},
+  bp:{role:"Authority + awareness", tags:["Direct buy","Newsletter","Fixed fee"],
+    target:["BabyPips sponsored newsletter to its retail forex readership","Display on forex education and calculator pages","Geo-restricted where the ad server allows"],
+    format:["Newsletter: native sponsor block, cost reduction angle","Display 300×250 + 728×90 with rate calculator CTA","Dedicated /babypips landing page"],
+    buy:["A: 1 send + display · B: 1 send + more display · C: 2 sends + display","Negotiate geo-split reporting and a re-send if CTR misses","Rates to confirm with BabyPips sales"],
+    kpi:["Clicks per send","Sign-up → connect rate","Branded search lift in the week after a send"]},
+  tg:{role:"Community reach", tags:["Telegram Ads","Paid posts","Reseller"],
+    target:["Telegram Ads targeted to vetted forex, prop and signals channels","Direct paid posts in 4–8 selected channels (EN, PT, ES)","No pump, signal-selling or gambling channels"],
+    format:["Telegram Ads: 160-character text + button","Paid posts: explainer + calculator link","Channel-specific UTM and landing page"],
+    buy:["Telegram Ads via reseller, CPM bidding","Paid posts priced per post after audit of channel views","Kill any channel with connect rate under 15% of sign-ups"],
+    kpi:["Cost per connected account by channel","Bonus-abuse flag rate","Post view-through"]}
+};
+const fmt$=n=>"$"+Math.round(n).toLocaleString("en-US");
+const fmtN=n=>Math.round(n).toLocaleString("en-US");
+const fmt$1=n=>"$"+Number(n).toFixed(0);
+const css=v=>`var(${v})`;
+let cur="B";
+function render(s){
+  cur=s; const d=M[s], t=d.tot, sc=SC[s];
+  document.querySelectorAll(".switch button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.s===s));
+  document.getElementById("sc-note").textContent=sc.note;
+  document.getElementById("sum-title").textContent=`${sc.label}: ${fmt$(sc.budget)} per month`;
+  document.getElementById("sum-text").textContent=sc.text;
+  document.getElementById("tiles").innerHTML=[
+    ["Monthly budget",fmt$(sc.budget),"All five channels + reserve",""],
+    ["Sign-ups",fmtN(t.su),`CPL ${fmt$1(t.cpl)}`,""],
+    ["Connected accounts",fmtN(t.cn),"Read-only MT5 / TradeLocker",""],
+    ["CPAC",fmt$1(t.cpac),"Target under $45","hl"],
+    ["Activated traders",fmtN(t.act),`5 lots in 10 days · ${fmt$1(t.cpaa)} each`,""]
+  ].map(([l,v,sub,c])=>`<div class="tile ${c}"><span class="eyebrow">${l}</span><span class="v">${v}</span><span class="s">${sub}</span></div>`).join("");
+  document.getElementById("rt-cpac").textContent=fmt$1(d.prog_sub.prog_rt.cpac);
+  document.getElementById("ctx-cpac").textContent=fmt$1(d.prog_sub.prog_ctx.cpac);
+  // stages
+  document.getElementById("stage-sc").textContent=`${sc.label} ${fmt$(sc.budget)}`;
+  document.getElementById("stages").innerHTML=["Awareness","Consideration","Conversion + activation"].map((n,i)=>
+    `<div class="stage"><div style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:14px">${n}</b><span class="mono">${sc.stage[i]}%</span></div><div class="meter"><i style="width:${sc.stage[i]}%"></i></div><span class="mono muted" style="font-size:13px">${fmt$(sc.budget*sc.stage[i]/100)}</span></div>`).join("");
+  // allocation
+  document.getElementById("bud-title").textContent=`${sc.label}: channel allocation`;
+  document.getElementById("bud-text").textContent=sc.text;
+  document.getElementById("alloc").innerHTML=ORDER.map(k=>`<div style="flex-grow:${d.ch[k].spend};background:${css(CH[k].c)}" title="${CH[k].name}"></div>`).join("");
+  document.getElementById("legend").innerHTML=ORDER.map(k=>`<span><span class="sw" style="background:${css(CH[k].c)}"></span>${CH[k].name} <span class="mono">${Math.round(d.ch[k].spend/sc.budget*100)}%</span></span>`).join("");
+  const sub={prog_rt:"↳ Ecosystem retargeting (S1–S6)",prog_lal:"↳ Ecosystem lookalikes",prog_ctx:"↳ Contextual PMPs"};
+  let rows="";
+  ORDER.forEach(k=>{
+    const r=d.ch[k];
+    rows+=`<tr><td><span class="sw" style="background:${css(CH[k].c)}"></span><b>${CH[k].name}</b></td><td class="r num">${fmt$(r.spend)}</td><td class="r num">${Math.round(r.spend/sc.budget*100)}%</td><td class="r num">${k==="res"?"—":fmtN(r.impr)}</td><td class="r num">${k==="res"?"—":fmtN(r.clicks)}</td><td class="r num">${fmtN(r.su)}</td><td class="r num">${fmtN(r.cn)}</td><td class="r num">${fmt$1(r.cpac)}</td><td class="r num">${fmtN(r.act)}</td></tr>`;
+    if(k==="prog") Object.keys(sub).forEach(x=>{const q=d.prog_sub[x];rows+=`<tr><td class="muted" style="padding-left:32px">${sub[x]}</td><td class="r num muted">${fmt$(q.spend)}</td><td class="r num muted">${Math.round(q.spend/sc.budget*100)}%</td><td class="r num muted">${fmtN(q.impr)}</td><td class="r num muted">${fmtN(q.clicks)}</td><td class="r num muted">${fmtN(q.su)}</td><td class="r num muted">${fmtN(q.cn)}</td><td class="r num muted">${fmt$1(q.cpac)}</td><td class="r num muted">${fmtN(q.act)}</td></tr>`});
+  });
+  document.querySelector("#alloc-tbl tbody").innerHTML=rows;
+  document.querySelector("#alloc-tbl tfoot").innerHTML=`<tr><td>Total</td><td class="r num">${fmt$(t.spend)}</td><td class="r num">100%</td><td class="r num">${fmtN(t.impr)}</td><td class="r num">${fmtN(t.clicks)}</td><td class="r num">${fmtN(t.su)}</td><td class="r num">${fmtN(t.cn)}</td><td class="r num">${fmt$1(t.cpac)}</td><td class="r num">${fmtN(t.act)}</td></tr>`;
+  // compare
+  const keys=["A","B","C"];
+  document.getElementById("compare").innerHTML=keys.map((k,i)=>{
+    const T=M[k].tot, P=i?M[keys[i-1]].tot:null;
+    const marg=P?fmt$1((T.spend-P.spend)/(T.cn-P.cn)):"—";
+    const when={A:"No ecosystem data share signed yet, or LTV unknown",B:"Data share live; launch default",C:"CPAC under $45 for 2 weeks and activation ≥ 40%"}[k];
+    return `<tr${k===s?' style="background:var(--accent-soft)"':''}><td><b>${SC[k].label}</b></td><td class="r num">${fmt$(T.spend)}</td><td class="r num">${fmtN(T.cn)}</td><td class="r num">${fmt$1(T.cpac)}</td><td class="r num">${fmtN(T.act)}</td><td class="r num">${fmt$1(T.cpaa)}</td><td class="r num">${marg}</td><td>${when}</td></tr>`}).join("");
+  // economics
+  const LTV=190, MM=60;
+  document.getElementById("econ").innerHTML=keys.map(k=>{const T=M[k].tot;return `<tr${k===s?' style="background:var(--accent-soft)"':''}><td><b>${SC[k].label}</b> ${fmt$(T.spend)}</td><td class="r num">${fmt$1(T.cpaa)}</td><td class="r num">${(LTV/T.cpaa).toFixed(1)}×</td><td class="r num">${((T.cpaa+50)/MM).toFixed(1)} mo</td><td class="r num">${fmt$(T.act*MM)}</td></tr>`}).join("");
+  // playbooks
+  document.getElementById("plays").innerHTML=["prog","pmax","meta","bp","tg"].map(k=>{
+    const p=PLAY[k], r=d.ch[k];
+    const li=a=>`<ul>${a.map(x=>`<li>${x}</li>`).join("")}</ul>`;
+    return `<article class="play"><div class="play-side"><span class="sw" style="width:28px;height:4px;border-radius:2px;background:${css(CH[k].c)}"></span><h3>${CH[k].name}</h3><span class="eyebrow">${p.role}</span><span class="bud">${fmt$(r.spend)}<span class="muted" style="font-size:13px"> / mo</span></span><span class="mono muted" style="font-size:12.5px">${fmtN(r.cn)} connections · CPAC ${fmt$1(r.cpac)}</span><div class="chips">${p.tags.map(x=>`<span class="chip${k==="prog"?" eco":""}">${x}</span>`).join("")}</div></div>
+    <div class="play-body"><div><h4>Targeting</h4>${li(p.target)}</div><div><h4>Formats</h4>${li(p.format)}</div><div><h4>Buying and bidding</h4>${li(p.buy)}</div><div><h4>Judged on</h4>${li(p.kpi)}</div></div></article>`}).join("");
+}
+document.querySelectorAll(".switch button").forEach(b=>b.addEventListener("click",()=>{render(b.dataset.s);try{localStorage.setItem("lb-sc",b.dataset.s)}catch(e){}}));
+let saved="B"; try{saved=localStorage.getItem("lb-sc")||"B"}catch(e){}
+render(M[saved]?saved:"B");
+</script>
+<script>
+(function(){
+const LOGO=(s=14)=>`<span class="wm-s" style="font-size:${s}px"><svg width="${Math.round(s*1.15)}" height="${s}" viewBox="0 0 30 26" fill="none" aria-hidden="true"><path d="M3 23V9l7-6v14" stroke="#F2F1EC" stroke-width="3" stroke-linejoin="round"/><path d="M14 3h13l-5 6 5 6H14" fill="#DCFA6A"/></svg>LOTS <b>BACK</b></span>`;
+function rcard(o){o=Object.assign({bk:"PU Prime",rt:"$7.00 / lot",lots:"42 lots closed",amt:"294.00",bars:[30,45,38,60,52,80],ex:true},o);
+ return `<div class="rcard${o.sm?" sm":""}"><div class="bk"><b>${o.bk}</b><span class="rt">${o.rt}</span></div><div class="amt">+$${o.amt} <small>USDT · this week</small></div><div class="bars">${o.bars.map(h=>`<i style="height:${h}%"></i>`).join("")}</div><div class="bk"><span>${o.lots}</span>${o.ex?'<span class="ex">Example</span>':""}</div></div>`}
+const FINE=`<span class="fine">Rebates on eligible lots at Standard/STP accounts after broker verification. Trading CFDs involves risk.</span>`;
+const BONUS=`<div class="bonus"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="6" width="12" height="8" rx="1.5" stroke="#DCFA6A" stroke-width="1.5"/><path d="M1.5 6h13M8 6v8M8 6C6 3 3.5 3.5 4.5 5.5M8 6c2-3 4.5-2.5 3.5-.5" stroke="#DCFA6A" stroke-width="1.5" stroke-linecap="round"/></svg>Close 5 verified lots in 10 days, get a $50 bonus.</div>`;
+const P=[
+{id:"iab",n:"Programmatic · IAB banners",f:"StackAdapt / DV360 · all stages",title:"IAB display banners, by segment",
+ mocks:()=>`
+ <div class="mock" style="width:300px"><span class="cap">300×250 · S1 / S4 retargeting · Angle 4</span>
+  <div class="lbad" style="width:300px;height:250px;padding:14px;display:grid;grid-template-rows:auto auto 1fr auto;gap:8px;border-radius:6px">
+   ${LOGO(13)}<div class="hd" style="font-size:21px">Already trading on <span class="lime">TradeLocker</span> or MT5?</div>
+   <div style="align-self:center">${rcard({bars:[40,55,48,70,62,90],sm:true})}</div>
+   <div style="display:flex;justify-content:space-between;align-items:center"><span class="cta">Connect my account →</span></div></div></div>
+ <div class="mock" style="width:160px"><span class="cap">160×600 · S2 funded traders · Angle 3</span>
+  <div class="lbad" style="width:160px;height:600px;padding:14px;display:grid;grid-template-rows:auto auto 1fr auto auto auto;gap:12px;border-radius:6px">
+   ${LOGO(12)}<div class="hd" style="font-size:30px">Trade your volume. Get <span class="lime">paid weekly.</span></div>
+   <div style="align-self:center">${rcard({bk:"Vantage",rt:"$6.00 / lot",amt:"180.00",lots:"30 lots closed"})}</div>
+   ${BONUS}<span class="cta">Claim $50 bonus</span>${FINE}</div></div>
+ <div class="mock" style="width:728px"><span class="cap">728×90 · Contextual PMPs (Forex Factory, Myfxbook) · Angle 1</span>
+  <div style="overflow-x:auto;max-width:100%"><div class="lbad" style="width:728px;height:90px;padding:10px 18px;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;border-radius:6px">
+   ${LOGO(15)}<div class="hd" style="font-size:24px">Offset your trading costs. <span class="lime">Up to $7 back</span> on every eligible lot.</div><span class="cta">See rate calculator</span></div></div></div>
+ <div class="mock" style="width:320px"><span class="cap">320×50 · Mobile · S5 researchers · Angle 2</span>
+  <div class="lbad" style="width:320px;height:50px;padding:6px 10px;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border-radius:4px">
+   <svg width="20" height="18" viewBox="0 0 30 26" fill="none" aria-hidden="true"><path d="M3 23V9l7-6v14" stroke="#F2F1EC" stroke-width="3"/><path d="M14 3h13l-5 6 5 6H14" fill="#DCFA6A"/></svg>
+   <b style="font-size:12.5px;line-height:15px">100% read-only. <span class="lime">Zero access</span> to your capital.</b><span class="cta" style="padding:6px 10px;font-size:11px">Connect</span></div></div>`,
+ b:[["Stage","Full funnel · judged on CPAC by tactic"],["Segment → angle","S1/S4 → Angle 4 · S2 → Angle 3 · S5 → Angle 2 · Contextual → Angle 1"],["Dynamic fields","Partner broker and its rate, from the segment's known broker where available"],["CTA","Connect my account · Claim $50 bonus · See rate calculator"],["First test","Broker-specific rate (PU Prime $7) vs generic 'up to $7'"]]},
+{id:"native",n:"Programmatic · Native",f:"StackAdapt in-feed · Consideration",title:"Native in-feed units",
+ mocks:()=>`
+ <div class="mock" style="width:520px"><span class="cap">In-feed on trading news (FXStreet, Investing.com) · 2 variants</span>
+  <div class="host" style="padding:16px;display:grid;gap:10px"><div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600"><span>More from the markets</span><span class="meta">Sponsored</span></div>
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div style="display:grid;gap:6px"><div class="lbad" style="border-radius:10px;padding:10px">${rcard({ex:true})}</div><b style="font-size:14px;line-height:19px">Your trades stay at your broker. Your rebates go to your wallet.</b><span class="meta">LotsBack · Read-only, connect in 60 seconds</span></div>
+    <div style="display:grid;gap:6px"><div class="lbad" style="border-radius:10px;padding:12px;display:grid;gap:6px"><div class="hd" style="font-size:22px">$5–$7<span class="lime"> back</span></div><span style="font-size:11px;color:#A3A39C">per eligible lot · win or lose</span><div class="chk"><span>PU Prime</span><span>Vantage</span><span>VT Markets</span><span>Star Trader</span></div></div><b style="font-size:14px;line-height:19px">Every lot you close already costs you. Here is how traders get part of it back.</b><span class="meta">LotsBack · See rate calculator</span></div>
+   </div></div></div>`,
+ b:[["Stage","Consideration · sign-up rate and CPL"],["Angle","2 (security) and 1 (cost reduction)"],["Hook","Plain-language explainer of where the rebate comes from"],["CTA","Explore integrated brokers · See rate calculator"],["First test","Security headline vs cost headline on the same placements"]]},
+{id:"babypips",n:"BabyPips",f:"Newsletter + ad space · Awareness",title:"BabyPips sponsored newsletter and display",
+ mocks:()=>`
+ <div class="mock" style="width:460px"><span class="cap">Sponsored block inside the newsletter · Angle 1</span>
+  <div class="host" style="padding:18px;display:grid;gap:12px;font-size:14px;line-height:21px">
+   <span class="meta" style="text-transform:uppercase;letter-spacing:.08em;font-size:11px">Presented by LotsBack</span>
+   <b style="font-size:19px;line-height:24px">Spreads and commissions add up. Some traders get part of them back.</b>
+   <div>Every lot you close pays your broker. LotsBack returns up to <b>$7 per eligible lot</b> to you, every week, in USDT or USDC. It works on winning and losing trades, at brokers like PU Prime, Vantage and VT Markets.</div>
+   <div class="lbad" style="border-radius:12px;padding:12px;display:grid;gap:8px">${rcard({})}<div class="chk"><span>Email only, no password</span><span>Read-only connection</span><span>Cancel anytime</span></div></div>
+   <span class="cta" style="justify-self:start">See how much you'd get back →</span>
+   <span class="meta" style="font-size:11px">Rebates on eligible Standard/STP lots after broker verification. Trading CFDs involves risk.</span></div></div>
+ <div class="mock" style="width:300px"><span class="cap">300×250 · Pip and position-size calculator pages</span>
+  <div class="lbad" style="width:300px;height:250px;padding:14px;display:grid;grid-template-rows:auto 1fr auto auto;gap:8px;border-radius:6px">
+   ${LOGO(13)}<div style="align-self:center;display:grid;gap:6px"><span style="font-size:12px;color:#A3A39C">Calculated your lot size?</span><div class="hd" style="font-size:28px">Now calculate your <span class="lime">rebate.</span></div></div>
+   <span class="cta" style="justify-self:start">Open rate calculator</span>${FINE}</div></div>`,
+ b:[["Stage","Awareness · clicks per send, branded search lift"],["Angle","1, cost reduction, in BabyPips' educational tone"],["Placement logic","Calculator pages: the reader is already thinking in lots"],["CTA","See how much you'd get back · Open rate calculator"],["Tracking","Dedicated /babypips landing page + UTM per send"]]},
+{id:"pmax",n:"Google PMax",f:"Search, Display, Shorts · Conversion",title:"Performance Max asset group",
+ mocks:()=>`
+ <div class="mock" style="width:460px"><span class="cap">Search · 'forex rebate', 'MT5 cashback', 'PU Prime cashback'</span>
+  <div class="host" style="padding:16px;display:grid;gap:4px;font-size:14px;line-height:20px">
+   <span class="meta"><b style="color:var(--h-fg)">Sponsored</b> · lotsback.com › rates</span>
+   <b style="font-size:18px;color:#1a4fd6;font-weight:500">Forex Cashback Up to $7/Lot | Paid Weekly in USDT</b>
+   <span>Get rebates on every eligible lot, win or lose. Email-only sign-up, read-only broker connection. $50 bonus after 5 verified lots.</span>
+   <span style="color:#1a4fd6;font-size:13px">Rates by broker · How verification works · Payouts</span></div></div>
+ <div class="mock" style="width:300px"><span class="cap">Display · 1:1 · Angle 3</span>
+  <div class="lbad" style="width:300px;aspect-ratio:1;padding:16px;display:grid;grid-template-rows:auto auto 1fr auto;gap:10px;border-radius:10px">
+   ${LOGO(13)}<div class="hd" style="font-size:30px">Turn closed lots into <span class="lime">weekly crypto.</span></div><div style="align-self:center">${BONUS}</div><span class="cta" style="justify-self:start">Get cashback</span></div></div>
+ <div class="mock" style="width:520px"><span class="cap">YouTube Shorts · 9:16 · 9s storyboard · Angle 2</span>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+   ${[["0–3s",`Every lot you close <span class="lime">costs you.</span>`,rcard({amt:"0.00",bars:[8,8,8,8,8,8],lots:"Without LotsBack"})],["3–6s",`Connect read-only <span class="lime">in 60 seconds.</span>`,`<div class="chk" style="display:grid;gap:6px;font-size:12px"><span>Email only</span><span>Read-only</span><span>No access to funds</span></div>`],["6–9s",`Get paid <span class="lime">every week.</span>`,`<div style="display:grid;gap:10px;justify-items:center">${LOGO(14)}<span class="cta">Get cashback</span></div>`]].map(f=>`<div class="lbad" style="aspect-ratio:9/16;padding:10px;display:grid;grid-template-rows:auto auto 1fr;gap:8px;border-radius:10px"><span style="font-size:10px;color:#6E6E68">${f[0]}</span><div class="hd" style="font-size:17px">${f[1]}</div><div style="align-self:center">${f[2]}</div></div>`).join("")}
+  </div></div>`,
+ b:[["Stage","Conversion · new-user CPAC"],["Asset groups","3, one per angle: cost (1), security (2), bonus (3)"],["Signals","S1 and S4 Customer Match + rebate and partner-broker search themes"],["CTA","Get cashback"],["Asset set","5 headlines, 5 long headlines, 4 descriptions, 1:1 / 1.91:1 / 4:5 images, 3 Shorts"]]},
+{id:"meta",n:"Meta · Instagram",f:"Feed, Reels, Stories · Consideration + RT",title:"Instagram placements",
+ mocks:()=>`
+ <div class="mock" style="width:300px"><span class="cap">Feed · 4:5 · lookalikes · Angle 1</span>
+  <div class="host"><div style="padding:10px 12px;display:flex;align-items:center;gap:8px;font-size:13px"><span style="width:28px;height:28px;border-radius:50%;background:#000;display:grid;place-items:center"><svg width="16" height="14" viewBox="0 0 30 26" fill="none" aria-hidden="true"><path d="M3 23V9l7-6v14" stroke="#F2F1EC" stroke-width="3"/><path d="M14 3h13l-5 6 5 6H14" fill="#DCFA6A"/></svg></span><div><b>lotsback</b><div class="meta" style="font-size:11px">Sponsored</div></div></div>
+   <div class="lbad" style="aspect-ratio:4/5;padding:18px;display:grid;grid-template-rows:auto 1fr auto;gap:12px">
+    <div class="hd" style="font-size:34px">Get cashback on every <span class="lime">eligible lot.</span></div>
+    <div style="align-self:center;display:grid;gap:6px">${[["PU Prime","$7.00"],["Vantage Markets","$6.00"],["VT Markets","$5.00"],["Star Trader","$5.00"]].map((b,i)=>`<div style="display:flex;justify-content:space-between;border:1px solid ${i?"#262626":"#DCFA6A"};border-radius:10px;padding:8px 10px;font-size:12.5px"><b>${b[0]}</b><span class="lime">${b[1]} / lot</span></div>`).join("")}</div>
+    ${FINE}</div>
+   <div style="padding:10px 12px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--h-line)"><span style="font-size:13px;font-weight:600">Get cashback</span><span style="font-size:18px">›</span></div></div></div>
+ <div class="mock" style="width:220px"><span class="cap">Reel · 9:16 · S1 custom audience · Angle 2</span>
+  <div class="lbad" style="aspect-ratio:9/16;padding:14px;display:grid;grid-template-rows:auto 1fr auto auto;gap:10px;border-radius:14px">
+   <span style="font-size:11px;color:#A3A39C">lotsback · Sponsored</span>
+   <div style="align-self:center;display:grid;gap:10px"><div class="hd" style="font-size:26px">100% read-only. <span class="lime">Zero access</span> to your capital.</div><div class="chk" style="display:grid;gap:4px;font-size:12px"><span>Your trades stay at your broker</span><span>Rebates go to your wallet</span></div></div>
+   <span class="cta">Connect my account</span>${FINE}</div></div>
+ <div class="mock" style="width:220px"><span class="cap">Story · 9:16 · S6 drop-offs · Angle 3</span>
+  <div class="lbad" style="aspect-ratio:9/16;padding:14px;display:grid;grid-template-rows:auto 1fr auto;gap:10px;border-radius:14px">
+   <div style="display:flex;gap:3px">${[1,1,1,0,0].map(x=>`<i style="flex:1;height:3px;border-radius:2px;background:${x?"#DCFA6A":"#333"}"></i>`).join("")}</div>
+   <div style="align-self:center;display:grid;gap:12px"><span style="font-size:12px;color:#A3A39C">3 of 5 verified lots done</span><div class="hd" style="font-size:30px">2 lots left for your <span class="lime">$50 bonus.</span></div><span style="font-size:12px;color:#A3A39C">7 days to go</span></div>
+   <span class="cta">Back to LotsBack</span></div></div>`,
+ b:[["Stage","Consideration + retargeting · 7-day click CPAC"],["Audience → angle","Lookalikes → 1 · S1/S2 → 2 · S6 → 3 (bonus countdown)"],["Format rules","Reels hook in first 1.5s, captions on, broker rates on screen"],["CTA","Get cashback · Connect my account"],["First test","Broker rate list vs read-only reassurance as the opening frame"]]},
+{id:"telegram",n:"Telegram",f:"Telegram Ads + channel posts · Awareness",title:"Telegram sponsored message and paid post",
+ mocks:()=>`
+ <div class="mock" style="width:360px"><span class="cap">Telegram Ads · sponsored message · Angle 3</span>
+  <div class="host" style="background:#E6EBEE;padding:12px;display:grid;gap:8px">
+   <div style="background:#fff;border-radius:12px;padding:10px 12px;font-size:13px;line-height:18px"><span class="meta" style="font-size:11px">FX Signals Daily · 12:04</span><div>EURUSD long hit TP2 (+38 pips). Next setup after London close.</div></div>
+   <div style="background:#fff;border-radius:12px;padding:10px 12px;font-size:13px;line-height:18px;display:grid;gap:6px"><div style="display:flex;justify-content:space-between"><b style="color:#2B7BC0">LotsBack</b><span class="meta" style="font-size:11px">Ad</span></div><div>Turn your closed lots into weekly USDT payouts. Up to $7/lot, win or lose. $50 bonus after 5 verified lots.</div><span style="display:block;text-align:center;border-radius:8px;background:#EAF3FB;color:#2B7BC0;font-weight:600;padding:7px">Claim $50 bonus offer</span></div></div></div>
+ <div class="mock" style="width:340px"><span class="cap">Paid post · curated forex / prop channel · Angle 4</span>
+  <div class="host" style="background:#E6EBEE;padding:12px">
+   <div style="background:#fff;border-radius:12px;overflow:hidden;font-size:13px;line-height:18px">
+    <div class="lbad" style="padding:14px;display:grid;gap:8px"><div class="hd" style="font-size:24px">Don't leave <span class="lime">volume cash</span> behind.</div>${rcard({bk:"VT Markets",rt:"$5.00 / lot",amt:"110.00",lots:"22 lots closed"})}</div>
+    <div style="padding:10px 12px;display:grid;gap:6px"><div>If you trade on TradeLocker or MT5 at one of LotsBack's brokers, you could be getting cashback on every closed lot. Connect read-only, get paid weekly in USDT or USDC.</div><span style="color:#2B7BC0">lotsback.com/tg-[channel]</span><span class="meta" style="font-size:11px">#ad · 👁 18.4K</span></div></div></div></div>`,
+ b:[["Stage","Awareness · cost per connected account by channel"],["Angle","3 in Telegram Ads (160 characters), 4 in paid posts"],["Channel rules","Vetted forex and prop channels only; no pump, signal-selling or gambling channels"],["CTA","Claim $50 bonus offer · Connect my account"],["Tracking","One UTM and landing path per channel; kill under 15% sign-up-to-connect"]]}
+];
+const grid=document.getElementById("plats"),panel=document.getElementById("adpanel");
+grid.innerHTML=P.map(p=>`<button type="button" class="plat" id="pl-${p.id}" data-id="${p.id}" aria-expanded="false" aria-controls="adpanel"><span class="pn">${p.n}</span><span class="pf">${p.f}</span><span class="pc">See ad examples →</span></button>`).join("");
+function open(id){const p=P.find(x=>x.id===id);
+ grid.querySelectorAll(".plat").forEach(b=>{const on=b.dataset.id===id;b.setAttribute("aria-expanded",on);b.querySelector(".pc").textContent=on?"Showing examples ↓":"See ad examples →"});
+ if(!p){panel.hidden=true;return}
+ panel.innerHTML=`<div class="ph-h"><h3>${p.title}</h3><button type="button" class="closeb" id="adclose">Close</button></div><div class="mocks">${p.mocks()}</div><aside class="brief"><span class="eyebrow">Creative brief</span><dl>${p.b.map(x=>`<div><dt>${x[0]}</dt><dd>${x[1]}</dd></div>`).join("")}</dl></aside>`;
+ panel.hidden=false;document.getElementById("adclose").onclick=()=>{open(null);document.getElementById("pl-"+id).focus()};
+ panel.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth",block:"nearest"});}
+grid.addEventListener("click",e=>{const b=e.target.closest(".plat");if(!b)return;open(b.getAttribute("aria-expanded")==="true"?null:b.dataset.id)});
+open("iab");
+})();
+</script>
+
+</body>
+</html>
