@@ -758,13 +758,13 @@ const P=[
 ];
 const grid=document.getElementById("plats"),panel=document.getElementById("adpanel");
 grid.innerHTML=P.map(p=>`<button type="button" class="plat" id="pl-${p.id}" data-id="${p.id}" aria-expanded="false" aria-controls="adpanel"><span class="pn">${p.n}</span><span class="pf">${p.f}</span><span class="pc">See ad examples →</span></button>`).join("");
-function open(id){const p=P.find(x=>x.id===id);
+function open(id,scroll){const p=P.find(x=>x.id===id);
  grid.querySelectorAll(".plat").forEach(b=>{const on=b.dataset.id===id;b.setAttribute("aria-expanded",on);b.querySelector(".pc").textContent=on?"Showing examples ↓":"See ad examples →"});
  if(!p){panel.hidden=true;return}
  panel.innerHTML=`<div class="ph-h"><h3>${p.title}</h3><button type="button" class="closeb" id="adclose">Close</button></div><div class="mocks">${p.mocks()}</div><aside class="brief"><span class="eyebrow">Creative brief</span><dl>${p.b.map(x=>`<div><dt>${x[0]}</dt><dd>${x[1]}</dd></div>`).join("")}</dl></aside>`;
  panel.hidden=false;document.getElementById("adclose").onclick=()=>{open(null);document.getElementById("pl-"+id).focus()};
- panel.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth",block:"nearest"});}
-grid.addEventListener("click",e=>{const b=e.target.closest(".plat");if(!b)return;open(b.getAttribute("aria-expanded")==="true"?null:b.dataset.id)});
+ if(scroll)panel.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth",block:"nearest"});}
+grid.addEventListener("click",e=>{const b=e.target.closest(".plat");if(!b)return;open(b.getAttribute("aria-expanded")==="true"?null:b.dataset.id,true)});
 open("iab");
 })();
 </script>
